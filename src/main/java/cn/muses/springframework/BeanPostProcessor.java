@@ -2,7 +2,7 @@
  * Copyright 2019 All rights reserved.
  */
 
-package cn.muses.springframework.annotation;
+package cn.muses.springframework;
 
 /**
  * @author jervis

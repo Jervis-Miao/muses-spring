@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.muses.springframework.annotation.Autowired;
-import cn.muses.springframework.annotation.BeanPostProcessor;
 import cn.muses.springframework.annotation.Component;
 import cn.muses.springframework.annotation.ComponentScan;
 import cn.muses.springframework.annotation.Lazy;
