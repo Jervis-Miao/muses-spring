@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import cn.muses.springframework.BeanNameAware;
 import cn.muses.springframework.BeanPostProcessor;
 import cn.muses.springframework.annotation.Component;
 
@@ -21,6 +22,12 @@ public class ProxyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
         System.out.println("初始化前");
+
+        // aware回调
+        if ((bean instanceof BeanNameAware)) {
+            ((BeanNameAware)bean).setBeanName(beanName);
+        }
+
         return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
     }
 

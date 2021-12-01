@@ -14,8 +14,7 @@ public class TestMySpringframework {
 
     public static void main(String[] args) {
         final MusesApplicationContext applicationContext = new MusesApplicationContext(AppConfig.class);
-        final MusesService musesService = (MusesService)applicationContext.getBean("musesService");
-        System.out.println(musesService);
-        musesService.test();
+        IProxyService musesService = applicationContext.getBean("proxyServiceImpl");
+        musesService.doLogical();
     }
 }

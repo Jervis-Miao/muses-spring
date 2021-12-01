@@ -103,7 +103,11 @@ public class MusesApplicationContext {
     public Object createBean(String beanName, BeanDefinition beanDefinition) {
         try {
             final Class<?> beanType = beanDefinition.getType();
+
+            // 推断构造方法
             Object bean = beanType.getConstructor().newInstance();
+
+            // 填充属性（循环依赖的AOP）
             for (Field field : beanType.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Autowired.class)) {
                     field.setAccessible(true);
@@ -111,18 +115,22 @@ public class MusesApplicationContext {
                 }
             }
 
+            // 处理aware回调
             if ((bean instanceof BeanNameAware)) {
                 ((BeanNameAware)bean).setBeanName(beanName);
             }
 
+            // 初始化前
             for (BeanPostProcessor processor : beanPostProcessors) {
                 bean = processor.postProcessBeforeInitialization(bean, beanName);
             }
 
+            // 初始化
             if (bean instanceof InitializingBean) {
                 ((InitializingBean)bean).afterPropertiesSet();
             }
 
+            // 切面、事务、初始化后
             for (BeanPostProcessor processor : beanPostProcessors) {
                 bean = processor.postProcessAfterInitialization(bean, beanName);
             }
@@ -143,7 +151,7 @@ public class MusesApplicationContext {
         return null;
     }
 
-    public Object getBean(String beanName) {
+    public <T> T getBean(String beanName) {
         BeanDefinition beanDefinition;
         if (null == (beanDefinition = this.beanDefinitionMap.get(beanName))) {
             throw new NullPointerException("Cannot find bean by name: " + beanName);
@@ -156,9 +164,9 @@ public class MusesApplicationContext {
                 this.singletonObjects.put(beanName, bean);
             }
 
-            return bean;
+            return (T) bean;
         } else {
-            return this.createBean(beanName, beanDefinition);
+            return (T) this.createBean(beanName, beanDefinition);
         }
     }
 }
